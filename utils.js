@@ -8,8 +8,7 @@ const FETCH_PARAM = {
   }
 const SEARCH_PARAM = {
   query:'nature',
-  size: 'small',
-  per_page:9
+  size: 'small'
 }
 //"https://api.pexels.com/v1/search?query=nature&per_page=1"
 //"https://api.pexels.com/v1/photos/2014422"

@@ -35,7 +35,15 @@ const renderCard = (photo) => {
     btnView.dataset.toggle = "modal";
     btnView.dataset.target = `#modal-${id}`;
     btnHide.innerText = 'Hide'
-    
+
+    btnHide.addEventListener('click',(e)=>{
+      e.target.closest(".card").remove()
+  })
+  img.addEventListener('click',(e)=>{
+    location.assign(`./details.html?id=${id}`)
+  })
+
+
     tpl.querySelector('.card-text').innerText = alt
     tpl.querySelector('.card-title').innerText = photographer
     tpl.querySelector('.text-muted').innerText = id
@@ -44,20 +52,12 @@ const renderCard = (photo) => {
     tpl.querySelector('.card').prepend(img)
     tpl.querySelector('.btn-group').append(btnView, btnHide)
 
-/*    btnView.addEventListener('click',(e)=>{
-      
-  })*/
-    btnHide.addEventListener('click',(e)=>{
-        e.target.closest(".card").remove()
-    })
-    img.addEventListener('click',(e)=>{
-      location.assign(`./details.html?id=${id}`)
-    })
+
 
     return tpl
 }
 const renderModal = (photo) => {
-  const {alt, avg_color, height, id, liked, photographer, photographer_id, photographer_url, src, url, width} = photo
+  const {alt, id, src} = photo
   const tpl = document.getElementById('modal').content.cloneNode(true) 
   tpl.firstElementChild.setAttribute('id',`modal-${id}`)
 
@@ -93,6 +93,7 @@ const loadImages = async (param) => {
 document.addEventListener('DOMContentLoaded', () =>{
   let typingTimer = null
   document.getElementById('primaryLoad').addEventListener('click',(e) =>{
+      SEARCH_PARAM.query = 'nature'
       loadImages(SEARCH_PARAM)
   })
   document.getElementById('secondaryLoad').addEventListener('click',(e) =>{
