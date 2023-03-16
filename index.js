@@ -1,36 +1,4 @@
-const API_KEY = 'paJxadIDTvKeyIqYVb20lbwxDj6p14qf9vV4BHuGw9oTkgIW5XG5Rz0M'
-const BASE_URL = 'https://api.pexels.com/v1/'
-const FETCH_PARAM = {
-    headers: {
-      //"Content-Type": "application/json; charset=utf-8",
-      "Authorization": "paJxadIDTvKeyIqYVb20lbwxDj6p14qf9vV4BHuGw9oTkgIW5XG5Rz0M"
-    }
-  }
-const SEARCH_PARAM = {
-  query:'nature',
-  size: 'small',
-  per_page:9
-}
-//"https://api.pexels.com/v1/search?query=nature&per_page=1"
-//"https://api.pexels.com/v1/photos/2014422"
-//"https://api.pexels.com/v1/search?query=people"
-//"https://api.pexels.com/v1/collections/featured?per_page=1
 
-//height="225"
-
-const resp = async (url, params) => {
-    try {
-        const response = await fetch(url, params)
-        const data = await response.json()
-
-        if (!response.ok) {
-            throw new Error("Network response was not OK");
-        }        
-        return  data       
-    } catch (error) {
-        console.log(error);
-    }
-}
 /*
   <div class="col-md-4">
     <div class="card mb-4 shadow-sm">
@@ -64,6 +32,8 @@ const renderCard = (photo) => {
     img.height = 225
 
     btnView.innerText = 'View'
+    btnView.dataset.toggle = "modal";
+    btnView.dataset.target = `#modal-${id}`;
     btnHide.innerText = 'Hide'
     
     tpl.querySelector('.card-text').innerText = alt
@@ -74,13 +44,32 @@ const renderCard = (photo) => {
     tpl.querySelector('.card').prepend(img)
     tpl.querySelector('.btn-group').append(btnView, btnHide)
 
+/*    btnView.addEventListener('click',(e)=>{
+      
+  })*/
     btnHide.addEventListener('click',(e)=>{
         e.target.closest(".card").remove()
+    })
+    img.addEventListener('click',(e)=>{
+      location.assign(`./details.html?id=${id}`)
     })
 
     return tpl
 }
+const renderModal = (photo) => {
+  const {alt, avg_color, height, id, liked, photographer, photographer_id, photographer_url, src, url, width} = photo
+  const tpl = document.getElementById('modal').content.cloneNode(true) 
+  tpl.firstElementChild.setAttribute('id',`modal-${id}`)
 
+  const img = document.createElement('img')
+  img.src = src.medium
+  img.alt = alt 
+  img.classList.add('img-fluid')
+
+  tpl.querySelector('.modal-body').append(img)
+  tpl.querySelector('.modal-title').innerText = alt
+  return tpl
+}
 
 const loadImages = async (param) => {
     const cnt = document.querySelector('.album .row')
@@ -94,7 +83,8 @@ const loadImages = async (param) => {
     const data = await resp(url, FETCH_PARAM)
 
     for (const photo of data.photos) {
-        cnt.append(renderCard(photo) )
+        cnt.append(renderCard(photo))
+        cnt.append(renderModal(photo))
     }
     loader.classList.remove('d-flex')
     loader.classList.add('d-none')
